@@ -19,7 +19,7 @@ export default function Twin() {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const maxCharacters = 500;
     const quickPrompts = [
-        'tell me about yourself',
+        'Tell me about yourself',
         'What is your expertise?',
         'Give me your strengths and weaknesses.',
     ];
