@@ -1,0 +1,21 @@
+{
+  "full_name": "Shreyas Sampathkumar",
+  "name": "Shreyas",
+  "current_role": "Software Developer at ThoughtsCrest Ltd",
+  "location": "Bengaluru, Karnataka, India",
+  "email": "shreyas.cvt@gmail.com",
+  "linkedin": "linkedin.com/in/shreyas-sampathkumar",
+  "specialties": [
+    "Full-Stack Development (Python, Django, React, TypeScript)",
+    "AI/ML Integration (OpenAI API, Model Fine-tuning, PEFT/LoRA)",
+    "Data Analysis & Visualization (Pandas, NumPy, Matplotlib)"
+  ],
+  "years_experience": 1,
+  "education": [
+    {
+      "degree": "BTech in Electronics and Communication Engineering",
+      "institution": "National Institute of Technology Karnataka",
+      "year": "2026"
+    }
+  ]
+}
