@@ -19,9 +19,9 @@ export default function Twin() {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const maxCharacters = 500;
     const quickPrompts = [
-        'Summarize the latest document',
-        'What changed this week?',
-        'Give me key risks and mitigations',
+        'tell me about yourself',
+        'What is your expertise?',
+        'Give me your strengths and weaknesses.',
     ];
 
     const scrollToBottom = () => {
@@ -116,7 +116,7 @@ export default function Twin() {
                         <Bot className="w-6 h-6" />
                         AI digital twin deployed to the cloud
                     </h2>
-                    <p className="text-sm text-slate-300 mt-1">Ask anything about your deployment and docs.</p>
+                    <p className="text-sm text-slate-300 mt-1">Ask anything about Shreyas.</p>
                 </div>
                 <button
                     onClick={() => {
@@ -203,7 +203,7 @@ export default function Twin() {
                             </div>
                         </div>
                         <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
-                            <div className="h-3 w-24 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 rounded-full animate-pulse" />
+                            <div className="h-3 w-24 bg-linear-to-r from-slate-200 via-slate-300 to-slate-200 rounded-full animate-pulse" />
                         </div>
                     </div>
                 )}

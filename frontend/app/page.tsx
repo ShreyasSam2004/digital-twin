@@ -9,7 +9,7 @@ export default function Home() {
             AI in Production
           </h1>
           <p className="text-center text-gray-600 mb-8">
-            Deploy your Digital Twin to the cloud
+            Deployed Digital Twin in the cloud
           </p>
 
           <div className="h-150">
@@ -17,7 +17,7 @@ export default function Home() {
           </div>
 
           <footer className="mt-8 text-center text-sm text-gray-500">
-            <p>Week 2: Building Your Digital Twin</p>
+            <p>Shreyas Digital Twin</p>
           </footer>
         </div>
       </div>
