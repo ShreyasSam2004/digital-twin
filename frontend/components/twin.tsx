@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User } from 'lucide-react';
+import { Send, Bot, User, Copy, Check } from 'lucide-react';
 
 interface Message {
     id: string;
@@ -15,7 +15,14 @@ export default function Twin() {
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [sessionId, setSessionId] = useState<string>('');
+    const [copiedId, setCopiedId] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const maxCharacters = 500;
+    const quickPrompts = [
+        'Summarize the latest document',
+        'What changed this week?',
+        'Give me key risks and mitigations',
+    ];
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -83,6 +90,16 @@ export default function Twin() {
         }
     };
 
+    const handleCopy = async (text: string, id: string) => {
+        try {
+            await navigator.clipboard?.writeText(text);
+            setCopiedId(id);
+            setTimeout(() => setCopiedId(null), 1200);
+        } catch (err) {
+            console.error('Copy failed', err);
+        }
+    };
+
     const handleKeyPress = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -93,16 +110,27 @@ export default function Twin() {
     return (
         <div className="flex flex-col h-full bg-gray-50 rounded-lg shadow-lg">
             {/* Header */}
-            <div className="bg-linear-to-r from-slate-700 to-slate-800 text-white p-4 rounded-t-lg">
-                <h2 className="text-xl font-semibold flex items-center gap-2">
-                    <Bot className="w-6 h-6" />
-                    AI Digital Twin
-                </h2>
-                <p className="text-sm text-slate-300 mt-1">Your AI course companion</p>
+            <div className="bg-linear-to-r from-slate-700 to-slate-800 text-white p-4 rounded-t-lg flex items-center justify-between">
+                <div>
+                    <h2 className="text-xl font-semibold flex items-center gap-2">
+                        <Bot className="w-6 h-6" />
+                        AI digital twin deployed to the cloud
+                    </h2>
+                    <p className="text-sm text-slate-300 mt-1">Ask anything about your deployment and docs.</p>
+                </div>
+                <button
+                    onClick={() => {
+                        setMessages([]);
+                        setSessionId('');
+                    }}
+                    className="text-sm bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-md border border-white/20 transition-colors"
+                >
+                    New chat
+                </button>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-100">
                 {messages.length === 0 && (
                     <div className="text-center text-gray-500 mt-8">
                         <Bot className="w-12 h-12 mx-auto mb-3 text-gray-400" />
@@ -126,18 +154,35 @@ export default function Twin() {
                         )}
 
                         <div
-                            className={`max-w-[70%] rounded-lg p-3 ${message.role === 'user'
+                            className={`relative max-w-[70%] rounded-lg p-3 group ${message.role === 'user'
                                     ? 'bg-slate-700 text-white'
-                                    : 'bg-white border border-gray-200 text-gray-800'
+                                    : 'bg-white border border-gray-200 text-gray-800 shadow-sm'
                                 }`}
                         >
                             <p className="whitespace-pre-wrap">{message.content}</p>
-                            <p
-                                className={`text-xs mt-1 ${message.role === 'user' ? 'text-slate-300' : 'text-gray-500'
-                                    }`}
-                            >
-                                {message.timestamp.toLocaleTimeString()}
-                            </p>
+                            <div className="flex items-center gap-3 text-xs mt-2 text-gray-400">
+                                <span className={message.role === 'user' ? 'text-slate-200' : 'text-gray-500'}>
+                                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                                <span className={`px-2 py-0.5 rounded-full border ${message.role === 'user' ? 'border-slate-400/40 text-slate-100' : 'border-gray-200 text-gray-600'}`}>
+                                    {message.role === 'user' ? 'sent' : 'responded'}
+                                </span>
+                                <button
+                                    onClick={() => handleCopy(message.content, message.id)}
+                                    className="ml-auto hidden group-hover:inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded border border-transparent hover:border-slate-300 text-gray-500 hover:text-gray-700 transition-colors"
+                                    aria-label="Copy message"
+                                >
+                                    {copiedId === message.id ? (
+                                        <>
+                                            <Check className="w-3 h-3" /> Copied
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Copy className="w-3 h-3" /> Copy
+                                        </>
+                                    )}
+                                </button>
+                            </div>
                         </div>
 
                         {message.role === 'user' && (
@@ -157,12 +202,8 @@ export default function Twin() {
                                 <Bot className="w-5 h-5 text-white" />
                             </div>
                         </div>
-                        <div className="bg-white border border-gray-200 rounded-lg p-3">
-                            <div className="flex space-x-2">
-                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
-                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100" />
-                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200" />
-                            </div>
+                        <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
+                            <div className="h-3 w-24 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 rounded-full animate-pulse" />
                         </div>
                     </div>
                 )}
@@ -171,16 +212,28 @@ export default function Twin() {
             </div>
 
             {/* Input */}
-            <div className="border-t border-gray-200 p-4 bg-white rounded-b-lg">
+            <div className="border-t border-gray-200 p-4 bg-white rounded-b-lg space-y-3">
+                <div className="flex flex-wrap gap-2">
+                    {quickPrompts.map((prompt) => (
+                        <button
+                            key={prompt}
+                            onClick={() => setInput(prompt)}
+                            className="text-sm px-3 py-1 rounded-full border border-gray-200 text-gray-600 hover:text-slate-700 hover:border-slate-300 transition-colors"
+                            disabled={isLoading}
+                        >
+                            {prompt}
+                        </button>
+                    ))}
+                </div>
                 <div className="flex gap-2">
-                    <input
-                        type="text"
+                    <textarea
                         value={input}
-                        onChange={(e) => setInput(e.target.value)}
+                        onChange={(e) => setInput(e.target.value.slice(0, maxCharacters))}
                         onKeyDown={handleKeyPress}
                         placeholder="Type your message..."
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-600 focus:border-transparent text-gray-800"
+                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-600 focus:border-transparent text-gray-800 resize-none min-h-[44px] max-h-32"
                         disabled={isLoading}
+                        rows={1}
                     />
                     <button
                         onClick={sendMessage}
@@ -189,6 +242,9 @@ export default function Twin() {
                     >
                         <Send className="w-5 h-5" />
                     </button>
+                </div>
+                <div className="text-right text-xs text-gray-400">
+                    {input.length}/{maxCharacters} characters
                 </div>
             </div>
         </div>
